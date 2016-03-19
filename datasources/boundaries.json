@@ -11,7 +11,11 @@
           "isEnabled": true,
           "isShown": true,
           "type": "wms",
-          "url": "http://data.gov.au/geoserver/other-suburb-locality-boundaries-psma-administrative-boundaries/wms?service=WMS&version=1.3.0&request=GetCapabilities"
+          "url": "http://data.gov.au/geoserver/other-suburb-locality-boundaries-psma-administrative-boundaries/wms?service=WMS&version=1.3.0&request=GetCapabilities",
+          "featureInfoTemplate": {
+            "name": "{{other_local_2}}",
+            "template": "{{other_local_2}}"
+          }
         },
         {
           "name": "Suburb Boundaries (ACT)",
@@ -19,7 +23,11 @@
           "isEnabled": true,
           "isShown": true,
           "type": "wms",
-          "url": "http://data.gov.au/geoserver/act-suburb-locality-boundaries-psma-administrative-boundaries/wms"
+          "url": "http://data.gov.au/geoserver/act-suburb-locality-boundaries-psma-administrative-boundaries/wms",
+          "featureInfoTemplate": {
+            "name": "{{act_loca_2}}",
+            "template": "{{act_loca_2}}"
+          }
         },
         {
           "name": "Suburb Boundaries (NSW)",
@@ -27,7 +35,11 @@
           "isEnabled": true,
           "isShown": true,
           "type": "wms",
-          "url": "http://data.gov.au/geoserver/nsw-suburb-locality-boundaries-psma-administrative-boundaries/wms"
+          "url": "http://data.gov.au/geoserver/nsw-suburb-locality-boundaries-psma-administrative-boundaries/wms",
+          "featureInfoTemplate": {
+            "name": "{{nsw_loca_2}}",
+            "template": "{{nsw_loca_2}}"
+          }
         },
         {
           "name": "Suburb Boundaries (NT)",
@@ -35,7 +47,11 @@
           "isEnabled": true,
           "isShown": true,
           "type": "wms",
-          "url": "http://data.gov.au/geoserver/nt-suburb-locality-boundaries-psma-administrative-boundaries/wms"
+          "url": "http://data.gov.au/geoserver/nt-suburb-locality-boundaries-psma-administrative-boundaries/wms",
+          "featureInfoTemplate": {
+            "name": "{{nt_local_2}}",
+            "template": "{{nt_local_2}}"
+          }
         },
         {
           "name": "Suburb Boundaries (QLD)",
@@ -43,7 +59,11 @@
           "isEnabled": true,
           "isShown": true,
           "type": "wms",
-          "url": "http://data.gov.au/geoserver/qld-suburb-locality-boundaries-psma-administrative-boundaries/wms"
+          "url": "http://data.gov.au/geoserver/qld-suburb-locality-boundaries-psma-administrative-boundaries/wms",
+          "featureInfoTemplate": {
+            "name": "{{qld_loca_2}}",
+            "template": "{{qld_loca_2}}"
+          }
         },
         {
           "name": "Suburb Boundaries (SA)",
@@ -51,7 +71,11 @@
           "isEnabled": true,
           "isShown": true,
           "type": "wms",
-          "url": "http://data.gov.au/geoserver/sa-suburb-locality-boundaries-psma-administrative-boundaries/wms"
+          "url": "http://data.gov.au/geoserver/sa-suburb-locality-boundaries-psma-administrative-boundaries/wms",
+          "featureInfoTemplate": {
+            "name": "{{sa_local_2}}",
+            "template": "{{sa_local_2}}"
+          }
         },
         {
           "name": "Suburb Boundaries (TAS)",
@@ -59,7 +83,11 @@
           "isEnabled": true,
           "isShown": true,
           "type": "wms",
-          "url": "http://data.gov.au/geoserver/tas-suburb-locality-boundaries-psma-administrative-boundaries/wms"
+          "url": "http://data.gov.au/geoserver/tas-suburb-locality-boundaries-psma-administrative-boundaries/wms",
+          "featureInfoTemplate": {
+            "name": "{{tas_loca_2}}",
+            "template": "{{tas_loca_2}}"
+          }
         },
         {
           "name": "Suburb Boundaries (VIC)",
@@ -67,7 +95,11 @@
           "isEnabled": true,
           "isShown": true,
           "type": "wms",
-          "url": "http://data.gov.au/geoserver/vic-suburb-locality-boundaries-psma-administrative-boundaries/wms"
+          "url": "http://data.gov.au/geoserver/vic-suburb-locality-boundaries-psma-administrative-boundaries/wms",
+          "featureInfoTemplate": {
+            "name": "{{vic_loca_2}}",
+            "template": "{{vic_loca_2}}"
+          }
         },
         {
           "name": "Suburb Boundaries (WA)",
@@ -75,7 +107,11 @@
           "isEnabled": true,
           "isShown": true,
           "type": "wms",
-          "url": "http://data.gov.au/geoserver/wa-suburb-locality-boundaries-psma-administrative-boundaries/wms"
+          "url": "http://data.gov.au/geoserver/wa-suburb-locality-boundaries-psma-administrative-boundaries/wms",
+          "featureInfoTemplate": {
+            "name": "{{wa_local_2}}",
+            "template": "{{wa_local_2}}"
+          }
         }
       ]
     }

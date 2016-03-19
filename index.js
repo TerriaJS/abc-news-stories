@@ -62,8 +62,6 @@ var MenuBarItemViewModel = require('terriajs/lib/ViewModels/MenuBarItemViewModel
 var MenuBarViewModel = require('terriajs/lib/ViewModels/MenuBarViewModel');
 var MutuallyExclusivePanels = require('terriajs/lib/ViewModels/MutuallyExclusivePanels');
 var NavigationViewModel = require('terriajs/lib/ViewModels/NavigationViewModel');
-var NowViewingAttentionGrabberViewModel = require('terriajs/lib/ViewModels/NowViewingAttentionGrabberViewModel');
-var NowViewingTabViewModel = require('terriajs/lib/ViewModels/NowViewingTabViewModel');
 var PopupMessageViewModel = require('terriajs/lib/ViewModels/PopupMessageViewModel');
 var SearchTabViewModel = require('terriajs/lib/ViewModels/SearchTabViewModel');
 var SettingsPanelViewModel = require('terriajs/lib/ViewModels/SettingsPanelViewModel');
@@ -77,6 +75,9 @@ var registerCatalogMembers = require('terriajs/lib/Models/registerCatalogMembers
 var raiseErrorToUser = require('terriajs/lib/Models/raiseErrorToUser');
 var selectBaseMap = require('terriajs/lib/ViewModels/selectBaseMap');
 var defaultValue = require('terriajs-cesium/Source/Core/defaultValue');
+var CameraView = require('terriajs/lib/Models/CameraView');
+var when = require('terriajs-cesium/Source/ThirdParty/when');
+var fs = require('fs');
 
 var svgInfo = require('terriajs/lib/SvgPaths/svgInfo');
 var svgPlus = require('terriajs/lib/SvgPaths/svgPlus');
@@ -104,18 +105,22 @@ terria.error.addEventListener(function(e) {
     });
 });
 
+
 terria.start({
     // If you don't want the user to be able to control catalog loading via the URL, remove the applicationUrl property below
     // as well as the call to "updateApplicationOnHashChange" further down.
     applicationUrl: window.location,
     configUrl: 'config.json',
-    defaultTo2D: isCommonMobilePlatform(),
+    defaultTo2D: false,
     urlShortener: new GoogleUrlShortener({
         terria: terria
     })
 }).otherwise(function(e) {
     raiseErrorToUser(terria, e);
-}).always(function() {
+}).then(function() {
+    return terria.catalog.group.items[0].items[0].load();
+}).then(function() {
+    terria.userProperties.activeTabId = 2;
     configuration.bingMapsKey = terria.configParameters.bingMapsKey ? terria.configParameters.bingMapsKey : configuration.bingMapsKey;
 
     // Automatically update Terria (load new catalogs, etc.) when the hash part of the URL changes.
@@ -145,7 +150,7 @@ terria.start({
 
     var brandBarElements = defaultValue(terria.configParameters.brandBarElements, [
             '',
-            '<a target="_blank" href="http://terria.io"><img src="images/terria_logo.png" height="52" title="Version: {{ version }}" /></a>',
+            '<a target="_blank" href="http://news.abc.net.au"><img src="images/news-logo-data.png" height="52" title="Version: {{ version }}" /></a>',
             ''
         ]);
     brandBarElements = brandBarElements.map(function(s) { return s.replace(/\{\{\s*version\s*\}\}/, version);});
@@ -161,21 +166,6 @@ terria.start({
         container: ui,
         terria: terria,
         items: [
-            // Add a Tools menu that only appears when "tools=1" is present in the URL.
-            createToolsMenuItem(terria, ui),
-            new MenuBarItemViewModel({
-                label: 'Add data',
-                tooltip: 'Add your own data to the map.',
-                svgPath: svgPlus,
-                svgPathWidth: 11,
-                svgPathHeight: 12,
-                callback: function() {
-                    AddDataPanelViewModel.open({
-                        container: ui,
-                        terria: terria
-                    });
-                }
-            }),
             new MenuBarItemViewModel({
                 label: 'Base Maps',
                 tooltip: 'Change the map mode (2D/3D) and base map.',
@@ -199,7 +189,7 @@ terria.start({
             }),
             new MenuBarItemViewModel({
                 label: 'Related Maps',
-                tooltip: 'View other maps in the NationalMap family.',
+                tooltip: 'View other maps in the ABC Photos Map family.',
                 svgPath: svgRelated,
                 svgPathWidth: 14,
                 svgPathHeight: 13,
@@ -214,12 +204,14 @@ terria.start({
             }),
             new MenuBarItemViewModel({
                 label: 'About',
-                tooltip: 'About National Map.',
+                tooltip: 'About ABC Photos Map.',
                 svgPath: svgInfo,
                 svgPathWidth: 18,
                 svgPathHeight: 18,
                 svgFillRule: 'evenodd',
-                href: 'about.html'
+                callback: function() {
+                    openAbout();
+                }
             })
         ]
     });
@@ -255,10 +247,6 @@ terria.start({
         ]
     });
 
-    var nowViewingTab = new NowViewingTabViewModel({
-        nowViewing: terria.nowViewing
-    });
-
     var isSmallScreen = document.body.clientWidth <= 700 || document.body.clientHeight <= 420;
 
     // Create the explorer panel.
@@ -268,23 +256,18 @@ terria.start({
         mapElementToDisplace: 'cesiumContainer',
         isOpen: !isSmallScreen && !terria.userProperties.hideExplorerPanel,
         tabs: [
-            new DataCatalogTabViewModel({
-                catalog: terria.catalog
-            }),
-            nowViewingTab,
             new SearchTabViewModel({
+                name: 'Find My Suburb',
                 searchProviders: [
-                    new CatalogItemNameSearchProviderViewModel({
-                        terria: terria
-                    }),
                     new BingMapsSearchProviderViewModel({
                         terria: terria,
                         key: configuration.bingMapsKey
-                    }),
-                    new GazetteerSearchProviderViewModel({
-                        terria: terria
                     })
                 ]
+            }),
+            new DataCatalogTabViewModel({
+                name: 'Change Views',
+                catalog: terria.catalog
             })
         ]
     });
@@ -293,25 +276,6 @@ terria.start({
     var featureInfoPanel = FeatureInfoPanelViewModel.create({
         container: ui,
         terria: terria
-    });
-
-    // Handle the user dragging/dropping files onto the application.
-    DragDropViewModel.create({
-        container: ui,
-        terria: terria,
-        dropTarget: document,
-        allowDropInitFiles: true,
-        allowDropDataFiles: true,
-        validDropElements: ['ui', 'cesiumContainer'],
-        invalidDropClasses: ['modal-background']
-    });
-
-    // Add a popup that appears the first time a catalog item is enabled,
-    // calling the user's attention to the Now Viewing tab.
-    NowViewingAttentionGrabberViewModel.create({
-        container: ui,
-        terria: terria,
-        nowViewingTabViewModel: nowViewingTab
     });
 
     // Make sure only one panel is open in the top right at any time.
@@ -328,4 +292,38 @@ terria.start({
     });
 
     document.getElementById('loadingIndicator').style.display = 'none';
+
+    //setTimeout(function() {
+    //}, 5000);
+    return terria.baseMap.load();
+}).then(function() {
+    var deferred = when.defer();
+
+    setTimeout(function() {
+        terria.initialView = CameraView.fromJson({
+            "north": -8,
+            "east": 158,
+            "south": -45,
+            "west": 109
+        });
+
+        setTimeout(deferred.resolve, 2000);
+    }, 2000);
+
+    return deferred.promise;
+}).then(function() {
+    openAbout();
 });
+
+function openAbout() {
+    var message = fs.readFileSync(__dirname + '/lib/Views/Intro.html', 'utf8');
+    var options = {
+        title: 'Introduction',
+        confirmText: "Let's take a look!",
+        width: 600,
+        height: 550,
+        message: message,
+        horizontalPadding : 100
+    };
+    PopupMessageViewModel.open(ui, options);
+}

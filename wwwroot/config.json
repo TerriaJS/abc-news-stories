@@ -24,18 +24,18 @@
         "googleAnalyticsKey": null,
         "googleAnalyticsOptions": null,
         "disclaimer": {
-            "text": "Disclaimer: The NationalMap must not be used for navigation or precise spatial analysis",
+            "text": "ABC News Map is not affiliated with the ABC. ABC News logo used for personal, non-commercial usage as per ABC's Copyright page. The ABC Photos Map must not be used for navigation or precise spatial analysis. ",
             "url": "about.html"
         },
         "developerAttribution": {
             "text": "Data61",
             "link": "http://www.csiro.au/en/Research/D61"
         },
-        "appName": "NationalMap",
-        "supportEmail": "data@pmc.gov.au",
-        "brandBarElements(Remove this bit in parentheses for production deployment)": [
-            "<a target=\"_blank\" href=\"about.html\"><img src=\"images/NationalMap_Logo_RGB72dpi_REV_Blue text.png\" height=\"50\" alt=\"National Map\" title=\"Version: {{version}}\" /></a>",
-            "<a target=\"_blank\" href=\"http://www.gov.au/\"><img src=\"images/AG-Rvsd-Stacked-Press.png\" height=\"45\" alt=\"Australian Government\" /></a>"
+        "appName": "ABC News App",
+        "supportEmail": "alex.gilleran@nicta.com.au",
+        "brandBarElements": [
+            "<a target=\"_blank\" href=\"http://news.abc.net.au\"><img src=\"images/news-logo-data.png\" height=\"52\" title=\"Version: {{ version }}\" /></a>",
+            "<a target=\"_blank\" href=\"http://terriajs.io\"><img src=\"images/terria_logo.png\" height=\"52\" alt=\"Terria Logo\" /></a>"
         ]
     }
 }
