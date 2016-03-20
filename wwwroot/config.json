@@ -19,6 +19,7 @@
         "nm"
     ],
     "parameters": {
+        "corsProxyBaseUrl": "/proxy/",
         "bingMapsKey": null,
         "googleUrlShortenerKey": null,
         "googleAnalyticsKey": null,
